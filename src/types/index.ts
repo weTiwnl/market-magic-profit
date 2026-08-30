@@ -1,0 +1,127 @@
+export type MarketplaceId = "shopee" | "mercado_livre" | "propria" | "custom";
+
+export const MARKETPLACE_LABELS: Record<MarketplaceId, string> = {
+  shopee: "Shopee",
+  mercado_livre: "Mercado Livre",
+  propria: "Venda própria",
+  custom: "Personalizado",
+};
+
+export type AdType = "none" | "fixed" | "percent";
+export type TaxType = "percent" | "fixed";
+
+/** A reusable fee configuration (ex: "Mercado Livre — Anúncio Clássico"). */
+export interface FeeProfile {
+  id: string;
+  name: string;
+  marketplace: MarketplaceId;
+  commissionPct: number;
+  fixedFee: number;
+  extraPct: number;
+  otherFees: number;
+  adType: AdType;
+  adValue: number;
+  taxType: TaxType;
+  taxValue: number;
+}
+
+/** Which cost lines are active in the calculation. */
+export interface CostToggles {
+  commission: boolean;
+  fixedFee: boolean;
+  extraPct: boolean;
+  otherFees: boolean;
+  tax: boolean;
+  advertising: boolean;
+  packaging: boolean;
+  shipping: boolean;
+  otherCosts: boolean;
+  discount: boolean;
+  coupon: boolean;
+}
+
+export const DEFAULT_TOGGLES: CostToggles = {
+  commission: true,
+  fixedFee: true,
+  extraPct: true,
+  otherFees: true,
+  tax: true,
+  advertising: true,
+  packaging: true,
+  shipping: true,
+  otherCosts: true,
+  discount: true,
+  coupon: true,
+};
+
+/** Everything the calculation engine needs. All money values are per unit. */
+export interface CalcInput {
+  productName: string;
+  productCost: number;
+  packaging: number;
+  shipping: number;
+  otherCosts: number;
+  price: number;
+  quantity: number;
+  discount: number;
+  coupon: number;
+  marketplace: MarketplaceId;
+  profileId?: string;
+  commissionPct: number;
+  fixedFee: number;
+  extraPct: number;
+  otherFees: number;
+  adType: AdType;
+  adValue: number;
+  taxType: TaxType;
+  taxValue: number;
+  toggles: CostToggles;
+}
+
+export interface CalcResult {
+  grossRevenue: number;
+  discountTotal: number;
+  revenueBase: number;
+  marketplaceFee: number;
+  fixedFee: number;
+  extraFee: number;
+  otherFees: number;
+  totalFees: number;
+  tax: number;
+  advertising: number;
+  shipping: number;
+  packaging: number;
+  productCostTotal: number;
+  otherCosts: number;
+  totalCosts: number;
+  netRevenue: number;
+  netProfit: number;
+  netMargin: number;
+  costRatio: number;
+  breakEvenPrice: number;
+  profitPerUnit: number;
+  status: "loss" | "low" | "healthy";
+}
+
+export interface SavedSimulation {
+  id: string;
+  createdAt: string;
+  input: CalcInput;
+  netProfit: number;
+  netMargin: number;
+}
+
+export interface SavedProduct {
+  id: string;
+  createdAt: string;
+  favorite: boolean;
+  input: CalcInput;
+}
+
+export interface AppSettings {
+  profiles: FeeProfile[];
+  defaultTaxType: TaxType;
+  defaultTaxValue: number;
+  lowMarginThreshold: number;
+  targetMarginPct: number;
+}
