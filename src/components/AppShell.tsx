@@ -19,7 +19,7 @@ function ThemeToggle() {
   );
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
+    document.documentElement.dataset["theme"] = theme;
   }, [theme]);
 
   return (
@@ -47,7 +47,7 @@ export function AppShell({
 }) {
   useEffect(() => {
     const stored = loadValue<"dark" | "light">(STORAGE_KEYS.theme, "dark");
-    document.documentElement.dataset.theme = stored;
+    document.documentElement.dataset["theme"] = stored;
     saveValue(STORAGE_KEYS.theme, stored);
   }, []);
 
