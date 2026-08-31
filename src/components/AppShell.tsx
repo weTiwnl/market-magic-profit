@@ -47,7 +47,7 @@ export function AppShell({
 }) {
   useEffect(() => {
     const stored = loadValue<"dark" | "light">(STORAGE_KEYS.theme, "dark");
-    document.documentElement.dataset.theme = stored;
+    document.documentElement.dataset["theme"] = stored;
     saveValue(STORAGE_KEYS.theme, stored);
   }, []);
 
