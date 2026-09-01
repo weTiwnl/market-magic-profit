@@ -60,15 +60,15 @@ export function TextField({
 }
 
 interface NumberFieldProps {
-  label?: string;
+  label?: string | undefined;
   value: number;
   onChange: (value: number) => void;
-  prefix?: string;
-  suffix?: string;
-  emphasis?: boolean;
-  extra?: ReactNode;
-  disabled?: boolean;
-  className?: string;
+  prefix?: string | undefined;
+  suffix?: string | undefined;
+  emphasis?: boolean | undefined;
+  extra?: ReactNode | undefined;
+  disabled?: boolean | undefined;
+  className?: string | undefined;
 }
 
 /** Numeric input that keeps what the user typed while emitting a parsed float. */
