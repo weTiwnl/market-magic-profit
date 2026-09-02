@@ -46,7 +46,7 @@ function StatCard({
   icon: string;
   label: string;
   value: string;
-  hint?: string;
+  hint?: string | undefined;
 }) {
   return (
     <div className="panel-surface p-4">
