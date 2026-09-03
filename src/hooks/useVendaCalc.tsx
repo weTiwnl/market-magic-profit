@@ -1,12 +1,35 @@
-import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
-import type { AppSettings, CalcInput, SavedProduct, SavedSimulation } from "@/types";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { toast } from "sonner";
+import type { AppSettings, CalcInput, SavedProduct, SavedSimulation, Store } from "@/types";
 import { DEFAULT_SETTINGS, createEmptyInput } from "@/calculators/defaults";
 import { calculateProfit } from "@/calculators/profit";
-import { STORAGE_KEYS } from "@/services/storage";
+import {
+  countStoreData,
+  createStore as buildStore,
+  duplicateStoreData,
+  ensureRegistry,
+  initStoreData,
+  purgeStoreData,
+  saveRegistry,
+  storeKey,
+} from "@/services/stores";
 import { uid } from "@/utils/format";
 import { usePersistentState } from "./usePersistentState";
 
+const PENDING = "__pending__";
+
 interface VendaCalcContextValue {
+  /* stores */
+  stores: Store[];
+  activeStore: Store | null;
+  activeStoreId: string;
+  setActiveStore: (id: string) => void;
+  addStore: (name: string, icon: string) => void;
+  updateStore: (id: string, patch: Partial<Pick<Store, "name" | "icon">>) => void;
+  duplicateStore: (id: string, includeData: boolean) => void;
+  deleteStore: (id: string) => void;
+  storeStats: (id: string) => { products: number; simulations: number };
+
   settings: AppSettings;
   setSettings: (updater: AppSettings | ((prev: AppSettings) => AppSettings)) => void;
   draft: CalcInput;
@@ -26,10 +49,99 @@ interface VendaCalcContextValue {
 const VendaCalcContext = createContext<VendaCalcContextValue | null>(null);
 
 export function VendaCalcProvider({ children }: { children: ReactNode }) {
-  const settingsStore = usePersistentState<AppSettings>(STORAGE_KEYS.settings, DEFAULT_SETTINGS);
-  const draftStore = usePersistentState<CalcInput>(STORAGE_KEYS.draft, createEmptyInput());
-  const simStore = usePersistentState<SavedSimulation[]>(STORAGE_KEYS.simulations, []);
-  const productStore = usePersistentState<SavedProduct[]>(STORAGE_KEYS.products, []);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [activeStoreId, setActiveStoreId] = useState<string>(PENDING);
+  const ready = activeStoreId !== PENDING;
+
+  useEffect(() => {
+    const registry = ensureRegistry();
+    setStores(registry.stores);
+    setActiveStoreId(registry.activeStoreId);
+  }, []);
+
+  useEffect(() => {
+    if (!ready) return;
+    saveRegistry({ stores, activeStoreId });
+  }, [stores, activeStoreId, ready]);
+
+  const scoped = (entity: Parameters<typeof storeKey>[1]) =>
+    ready ? storeKey(activeStoreId, entity) : `${PENDING}:${entity}`;
+
+  const settingsStore = usePersistentState<AppSettings>(
+    scoped("settings"),
+    DEFAULT_SETTINGS,
+    ready,
+  );
+  const draftStore = usePersistentState<CalcInput>(scoped("draft"), createEmptyInput(), ready);
+  const simStore = usePersistentState<SavedSimulation[]>(scoped("simulations"), [], ready);
+  const productStore = usePersistentState<SavedProduct[]>(scoped("products"), [], ready);
+
+  /* ---------------- store management ---------------- */
+
+  const setActiveStore = useCallback(
+    (id: string) => {
+      setActiveStoreId((prev) => {
+        if (prev === id) return prev;
+        const found = stores.find((s) => s.id === id);
+        if (found) toast.success(`Agora você está visualizando: ${found.icon} ${found.name}`);
+        return id;
+      });
+    },
+    [stores],
+  );
+
+  const addStore = useCallback((name: string, icon: string) => {
+    const store = buildStore(name, icon);
+    initStoreData(store.id);
+    setStores((prev) => [...prev, store]);
+    setActiveStoreId(store.id);
+    toast.success(`Loja criada: ${store.icon} ${store.name}`);
+  }, []);
+
+  const updateStore = useCallback(
+    (id: string, patch: Partial<Pick<Store, "name" | "icon">>) =>
+      setStores((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s))),
+    [],
+  );
+
+  const duplicateStore = useCallback(
+    (id: string, includeData: boolean) => {
+      const source = stores.find((s) => s.id === id);
+      if (!source) return;
+      const copy = buildStore(`${source.name} (cópia)`, source.icon);
+      duplicateStoreData(id, copy.id, includeData);
+      setStores((prev) => [...prev, copy]);
+      toast.success(`Loja duplicada: ${copy.icon} ${copy.name}`);
+    },
+    [stores],
+  );
+
+  const deleteStore = useCallback(
+    (id: string) => {
+      if (stores.length <= 1) {
+        toast.error("Não é possível excluir a última loja.");
+        return;
+      }
+      purgeStoreData(id);
+      const remaining = stores.filter((s) => s.id !== id);
+      setStores(remaining);
+      if (activeStoreId === id) setActiveStoreId(remaining[0]!.id);
+      toast.success("Loja excluída.");
+    },
+    [stores, activeStoreId],
+  );
+
+  const storeStats = useCallback(
+    (id: string) => {
+      if (id === activeStoreId) {
+        return { products: productStore.value.length, simulations: simStore.value.length };
+      }
+      return countStoreData(id);
+    },
+    [activeStoreId, productStore.value.length, simStore.value.length],
+  );
+
+  /* ---------------- scoped entities ---------------- */
 
   const patchDraft = useCallback(
     (patch: Partial<CalcInput>) => draftStore.setValue((prev) => ({ ...prev, ...patch })),
@@ -42,6 +154,7 @@ export function VendaCalcProvider({ children }: { children: ReactNode }) {
       simStore.setValue((prev) => [
         {
           id: uid(),
+          storeId: activeStoreId,
           createdAt: new Date().toISOString(),
           input,
           netProfit: result.netProfit,
@@ -50,7 +163,7 @@ export function VendaCalcProvider({ children }: { children: ReactNode }) {
         ...prev,
       ]);
     },
-    [simStore, settingsStore.value.lowMarginThreshold],
+    [simStore, settingsStore.value.lowMarginThreshold, activeStoreId],
   );
 
   const removeSimulation = useCallback(
@@ -63,18 +176,27 @@ export function VendaCalcProvider({ children }: { children: ReactNode }) {
       simStore.setValue((prev) => {
         const found = prev.find((s) => s.id === id);
         if (!found) return prev;
-        return [{ ...found, id: uid(), createdAt: new Date().toISOString() }, ...prev];
+        return [
+          { ...found, id: uid(), storeId: activeStoreId, createdAt: new Date().toISOString() },
+          ...prev,
+        ];
       }),
-    [simStore],
+    [simStore, activeStoreId],
   );
 
   const saveProduct = useCallback(
     (input: CalcInput) =>
       productStore.setValue((prev) => [
-        { id: uid(), createdAt: new Date().toISOString(), favorite: true, input },
+        {
+          id: uid(),
+          storeId: activeStoreId,
+          createdAt: new Date().toISOString(),
+          favorite: true,
+          input,
+        },
         ...prev,
       ]),
-    [productStore],
+    [productStore, activeStoreId],
   );
 
   const removeProduct = useCallback(
@@ -90,8 +212,22 @@ export function VendaCalcProvider({ children }: { children: ReactNode }) {
     [productStore],
   );
 
+  const activeStore = useMemo(
+    () => stores.find((s) => s.id === activeStoreId) ?? null,
+    [stores, activeStoreId],
+  );
+
   const value = useMemo<VendaCalcContextValue>(
     () => ({
+      stores,
+      activeStore,
+      activeStoreId,
+      setActiveStore,
+      addStore,
+      updateStore,
+      duplicateStore,
+      deleteStore,
+      storeStats,
       settings: settingsStore.value,
       setSettings: settingsStore.setValue,
       draft: draftStore.value,
@@ -105,9 +241,19 @@ export function VendaCalcProvider({ children }: { children: ReactNode }) {
       saveProduct,
       removeProduct,
       toggleFavorite,
-      hydrated: settingsStore.hydrated && draftStore.hydrated,
+      hydrated: ready && settingsStore.hydrated && draftStore.hydrated,
     }),
     [
+      stores,
+      activeStore,
+      activeStoreId,
+      setActiveStore,
+      addStore,
+      updateStore,
+      duplicateStore,
+      deleteStore,
+      storeStats,
+      ready,
       settingsStore.value,
       settingsStore.setValue,
       settingsStore.hydrated,

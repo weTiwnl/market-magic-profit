@@ -105,6 +105,7 @@ export interface CalcResult {
 
 export interface SavedSimulation {
   id: string;
+  storeId?: string;
   createdAt: string;
   input: CalcInput;
   netProfit: number;
@@ -113,6 +114,7 @@ export interface SavedSimulation {
 
 export interface SavedProduct {
   id: string;
+  storeId?: string;
   createdAt: string;
   favorite: boolean;
   input: CalcInput;
@@ -124,4 +126,17 @@ export interface AppSettings {
   defaultTaxValue: number;
   lowMarginThreshold: number;
   targetMarginPct: number;
+}
+
+/** A store / workspace: an isolated data space (products, simulations, settings). */
+export interface Store {
+  id: string;
+  name: string;
+  icon: string;
+  createdAt: string;
+}
+
+export interface StoreRegistry {
+  stores: Store[];
+  activeStoreId: string;
 }
