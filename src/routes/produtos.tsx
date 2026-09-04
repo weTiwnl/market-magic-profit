@@ -10,13 +10,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/produtos")({
   head: () => ({
     meta: [
-      { title: "Produtos favoritos — VendaCalc" },
+      { title: "Produtos favoritos — Profitza" },
       {
         name: "description",
         content:
           "Salve seus produtos com custo e preço e recalcule o lucro automaticamente com as taxas configuradas hoje.",
       },
-      { property: "og:title", content: "Produtos favoritos — VendaCalc" },
+      { property: "og:title", content: "Produtos favoritos — Profitza" },
       {
         property: "og:description",
         content: "Seus produtos salvos, recalculados com as configurações atuais de taxas.",

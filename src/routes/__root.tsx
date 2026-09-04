@@ -83,23 +83,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
-      { title: "VendaCalc — Calculadora de Lucro para Marketplaces" },
+      { title: "Profitza — Venda melhor. Lucre mais." },
       {
         name: "description",
         content:
-          "Calcule lucro real, margem, preço ideal e ponto de equilíbrio nas vendas de Shopee, Mercado Livre e loja própria.",
+          "Profitza: calculadora e análise de rentabilidade para vendas online. Calcule lucro real, margem, preço ideal e ponto de equilíbrio.",
       },
-      { name: "theme-color", content: "#0b0f14" },
+      { name: "theme-color", content: "#0a0f0c" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "VendaCalc" },
+      { name: "apple-mobile-web-app-title", content: "Profitza" },
       {
         name: "apple-mobile-web-app-status-bar-style",
         content: "black-translucent",
       },
-      { property: "og:title", content: "VendaCalc — Calculadora de Lucro para Marketplaces" },
+      { property: "og:title", content: "Profitza — Venda melhor. Lucre mais." },
       {
         property: "og:description",
-        content: "Saiba quanto realmente sobra em cada venda antes de anunciar.",
+        content:
+          "Profitza: calculadora e análise de rentabilidade para vendas online. Venda melhor. Lucre mais.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

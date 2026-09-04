@@ -9,13 +9,13 @@ import { MARKETPLACE_LABELS, type FeeProfile, type MarketplaceId } from "@/types
 export const Route = createFileRoute("/configuracoes")({
   head: () => ({
     meta: [
-      { title: "Configurações de taxas — VendaCalc" },
+      { title: "Configurações de taxas — Profitza" },
       {
         name: "description",
         content:
           "Crie perfis de taxas por marketplace: comissão, taxa fixa, publicidade, imposto e outros custos, do jeito que se aplicam ao seu caso.",
       },
-      { property: "og:title", content: "Configurações de taxas — VendaCalc" },
+      { property: "og:title", content: "Configurações de taxas — Profitza" },
       {
         property: "og:description",
         content: "Perfis configuráveis de comissão, taxa fixa, publicidade e imposto.",

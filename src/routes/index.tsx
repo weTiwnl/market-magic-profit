@@ -22,13 +22,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "VendaCalc — Calculadora de lucro para marketplaces" },
+      { title: "Profitza — Venda melhor. Lucre mais." },
       {
         name: "description",
         content:
           "Calcule lucro líquido, margem, taxas, impostos e preço mínimo de venda na Shopee e no Mercado Livre em segundos.",
       },
-      { property: "og:title", content: "VendaCalc — Calculadora de lucro para marketplaces" },
+      { property: "og:title", content: "Profitza — Venda melhor. Lucre mais." },
       {
         property: "og:description",
         content: "Venda pelo preço certo. Saiba quanto realmente sobra em cada venda.",

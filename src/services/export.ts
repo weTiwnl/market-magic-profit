@@ -70,7 +70,7 @@ export function exportPdf(simulations: SavedSimulation[]) {
   const win = window.open("", "_blank");
   if (!win) return;
   win.document.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8" />
-<title>VendaCalc — Simulações</title>
+<title>Profitza — Simulações</title>
 <style>
 body{font-family:Arial,Helvetica,sans-serif;padding:24px;color:#111}
 h1{font-size:18px;margin:0 0 4px}p{color:#666;font-size:12px;margin:0 0 16px}
@@ -79,7 +79,7 @@ th,td{border:1px solid #ddd;padding:6px 8px;text-align:right}
 th:first-child,td:first-child,th:nth-child(3),td:nth-child(3){text-align:left}
 th{background:#f4f4f5}
 </style></head><body>
-<h1>VendaCalc — Simulações</h1>
+<h1>Profitza — Simulações</h1>
 <p>Venda pelo preço certo. Saiba quanto realmente sobra. Simulação financeira — confira as alíquotas com seu contador.</p>
 <table>${rows}</table>
 <script>window.onload=function(){window.print()}</script>
@@ -94,13 +94,13 @@ export async function shareSimulation(simulation: SavedSimulation) {
     `Custo: R$ ${simulation.input.productCost.toFixed(2)}`,
     `Lucro líquido: R$ ${simulation.netProfit.toFixed(2)}`,
     `Margem: ${simulation.netMargin.toFixed(2)}%`,
-    "— VendaCalc",
+    "— Profitza",
   ].join("\n");
 
   const nav = navigator as Navigator & { share?: (data: ShareData) => Promise<void> };
   if (nav.share) {
     try {
-      await nav.share({ title: "VendaCalc", text });
+      await nav.share({ title: "Profitza", text });
       return "shared";
     } catch {
       return "cancelled";

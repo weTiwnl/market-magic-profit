@@ -21,13 +21,13 @@ import { formatMoney, formatPercent } from "@/utils/format";
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard de lucro — VendaCalc" },
+      { title: "Dashboard de lucro — Profitza" },
       {
         name: "description",
         content:
           "Acompanhe lucro potencial, margem média, produto mais rentável e o marketplace mais lucrativo das suas simulações.",
       },
-      { property: "og:title", content: "Dashboard de lucro — VendaCalc" },
+      { property: "og:title", content: "Dashboard de lucro — Profitza" },
       {
         property: "og:description",
         content: "Lucro potencial, margem média e comparativo Shopee x Mercado Livre.",
@@ -141,7 +141,7 @@ function DashboardPage() {
   return (
     <AppShell
       title="Dashboard"
-      subtitle="Venda pelo preço certo. Saiba quanto realmente sobra."
+      subtitle="Profitza — Venda melhor. Lucre mais."
       actions={
         <span className="flex items-center gap-1.5 rounded-lg bg-panel2 px-2.5 py-1.5 text-[12px] text-mut ring-1 ring-hairline">
           Visualizando dados de:

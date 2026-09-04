@@ -1,13 +1,13 @@
 {
-  "name": "VendaCalc — Calculadora de Lucro para Marketplaces",
-  "short_name": "VendaCalc",
-  "description": "Calcule lucro, margem e preço ideal nas vendas de Shopee, Mercado Livre e loja própria.",
+  "name": "Profitza",
+  "short_name": "Profitza",
+  "description": "Calculadora e análise de rentabilidade para vendas online.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0b0f14",
-  "theme_color": "#0b0f14",
+  "background_color": "#0a0f0c",
+  "theme_color": "#22c55e",
   "lang": "pt-BR",
   "categories": ["business", "finance", "productivity"],
   "icons": [
