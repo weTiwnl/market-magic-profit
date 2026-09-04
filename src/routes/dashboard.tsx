@@ -142,6 +142,14 @@ function DashboardPage() {
     <AppShell
       title="Dashboard"
       subtitle="Venda pelo preço certo. Saiba quanto realmente sobra."
+      actions={
+        <span className="flex items-center gap-1.5 rounded-lg bg-panel2 px-2.5 py-1.5 text-[12px] text-mut ring-1 ring-hairline">
+          Visualizando dados de:
+          <span className="font-medium text-foreground">
+            {activeStore ? `${activeStore.icon} ${activeStore.name}` : "—"}
+          </span>
+        </span>
+      }
     >
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
