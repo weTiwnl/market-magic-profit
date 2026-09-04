@@ -12,7 +12,36 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ActionButton } from "./AppShell";
+
+/** Local copy of the shell button style — importing AppShell here would create
+ * a circular import (AppShell renders StoreSwitcher). */
+function ActionButton({
+  children,
+  onClick,
+  variant = "ghost",
+  className,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  variant?: "solid" | "ghost";
+  className?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "rounded-lg px-3 py-2.5 text-[13px] transition-colors",
+        variant === "solid"
+          ? "bg-primary font-semibold text-primary-foreground hover:opacity-90"
+          : "bg-panel2 font-medium text-foreground ring-1 ring-hairline hover:bg-panel2/70",
+        className,
+      )}
+    >
+      {children}
+    </button>
+  );
+}
 
 function IconPicker({ value, onChange }: { value: string; onChange: (icon: string) => void }) {
   return (
