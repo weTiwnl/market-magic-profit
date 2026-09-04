@@ -75,7 +75,7 @@ const tooltipStyle = {
 };
 
 function DashboardPage() {
-  const { simulations, draft, settings } = useVendaCalc();
+  const { simulations, draft, settings, activeStore } = useVendaCalc();
 
   const stats = useMemo(() => {
     if (simulations.length === 0) return null;
