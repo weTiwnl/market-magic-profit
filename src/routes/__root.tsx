@@ -87,7 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Calcule lucro real, margem, preço ideal e ponto de equilíbrio nas vendas de Shopee, Mercado Livre e loja própria.",
+          "Profitza: calculadora e análise de rentabilidade para vendas online. Calcule lucro real, margem, preço ideal e ponto de equilíbrio.",
       },
       { name: "theme-color", content: "#0a0f0c" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
@@ -100,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Profitza: calculadora e análise de rentabilidade para vendas online. Venda melhor. Lucre mais.",,
+          "Profitza: calculadora e análise de rentabilidade para vendas online. Venda melhor. Lucre mais.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
