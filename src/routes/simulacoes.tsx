@@ -11,13 +11,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/simulacoes")({
   head: () => ({
     meta: [
-      { title: "Histórico de simulações — VendaCalc" },
+      { title: "Histórico de simulações — Profitza" },
       {
         name: "description",
         content:
           "Consulte, edite, duplique e exporte para CSV, Excel ou PDF todas as simulações de lucro que você salvou.",
       },
-      { property: "og:title", content: "Histórico de simulações — VendaCalc" },
+      { property: "og:title", content: "Histórico de simulações — Profitza" },
       {
         property: "og:description",
         content: "Todas as suas simulações de lucro salvas, com exportação e compartilhamento.",

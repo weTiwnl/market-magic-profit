@@ -5,7 +5,7 @@
 @custom-variant light (&:is([data-theme="light"] *));
 
 /*
- * VendaCalc design system — "Terminal Frost"
+ * Profitza design system — "Terminal Frost"
  * Dark is the default theme; [data-theme="light"] on <html> flips the tokens.
  * Never hardcode colors in components: use the semantic tokens below.
  */
