@@ -35,8 +35,10 @@
   --card-foreground: var(--frost);
   --popover: var(--panel-2);
   --popover-foreground: var(--frost);
-  --primary: var(--frost);
-  --primary-foreground: var(--ink);
+  /* brand: Profitza green — growth/profit accent */
+  --brand: oklch(0.76 0.16 158);
+  --primary: var(--brand);
+  --primary-foreground: oklch(0.16 0.03 160);
   --secondary: var(--panel-2);
   --secondary-foreground: var(--frost);
   --muted: var(--panel-2);
@@ -58,8 +60,8 @@
 
   --sidebar: var(--panel);
   --sidebar-foreground: var(--frost);
-  --sidebar-primary: var(--frost);
-  --sidebar-primary-foreground: var(--ink);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: oklch(0.16 0.03 160);
   --sidebar-accent: var(--panel-2);
   --sidebar-accent-foreground: var(--frost);
   --sidebar-border: var(--hairline);
@@ -81,7 +83,8 @@
   --loss: oklch(0.55 0.19 22);
   --info: oklch(0.52 0.16 255);
 
-  --primary: oklch(0.24 0.02 265);
+  --brand: oklch(0.55 0.14 158);
+  --primary: var(--brand);
   --primary-foreground: oklch(0.99 0 0);
   --destructive-foreground: oklch(0.99 0 0);
   --field: oklch(0.975 0.005 250);
@@ -118,6 +121,7 @@
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  --color-brand: var(--brand);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
