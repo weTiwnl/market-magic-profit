@@ -3,6 +3,7 @@ import { useEffect, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { STORAGE_KEYS, loadValue, saveValue } from "@/services/storage";
 import { usePersistentState } from "@/hooks/usePersistentState";
+import { StoreSwitcher } from "./StoreSwitcher";
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: "🏠" },
@@ -61,13 +62,14 @@ export function AppShell({
 
       <div className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8 lg:pb-10">
         <header className="flex h-14 items-center justify-between border-b border-hairline">
-          <div className="flex items-center gap-8">
+          <div className="flex min-w-0 items-center gap-3 lg:gap-6">
             <Link to="/" className="flex items-center gap-2.5">
               <span className="num grid size-7 place-items-center rounded-md bg-primary text-[13px] font-bold text-primary-foreground">
                 V
               </span>
               <span className="text-[15px] font-semibold tracking-tight">VendaCalc</span>
             </Link>
+            <StoreSwitcher />
             <nav className="hidden items-center gap-1 md:flex">
               {NAV.map((item) => (
                 <Link
