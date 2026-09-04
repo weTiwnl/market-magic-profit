@@ -64,10 +64,16 @@ export function AppShell({
         <header className="flex h-14 items-center justify-between border-b border-hairline">
           <div className="flex min-w-0 items-center gap-3 lg:gap-6">
             <Link to="/" className="flex items-center gap-2.5">
-              <span className="num grid size-7 place-items-center rounded-md bg-primary text-[13px] font-bold text-primary-foreground">
-                V
+              <img
+                src="/icons/icon-192.png"
+                alt="Profitza"
+                width={28}
+                height={28}
+                className="size-7 rounded-md"
+              />
+              <span className="text-[15px] font-semibold tracking-tight">
+                Profitza
               </span>
-              <span className="text-[15px] font-semibold tracking-tight">VendaCalc</span>
             </Link>
             <StoreSwitcher />
             <nav className="hidden items-center gap-1 md:flex">
