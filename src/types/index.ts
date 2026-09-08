@@ -10,6 +10,11 @@ export const MARKETPLACE_LABELS: Record<MarketplaceId, string> = {
 export type AdType = "none" | "fixed" | "percent";
 export type TaxType = "percent" | "fixed";
 
+/** Which calculator flow the user is on. */
+export type CalculationMode = "profit" | "price";
+/** How the user defines the desired gain in the price-formation flow. */
+export type ProfitType = "margin" | "markup";
+
 /** A reusable fee configuration (ex: "Mercado Livre — Anúncio Clássico"). */
 export interface FeeProfile {
   id: string;
@@ -76,6 +81,14 @@ export interface CalcInput {
   taxType: TaxType;
   taxValue: number;
   toggles: CostToggles;
+  /** Calculator flow used (legacy records may omit it → "profit"). */
+  calcMode?: CalculationMode;
+  /** Gain definition in the price-formation flow (legacy → "margin"). */
+  profitType?: ProfitType;
+  /** Desired net margin (%) used by the price-formation flow. */
+  desiredMarginPct?: number;
+  /** Desired markup (%) over the base cost. */
+  markupPct?: number;
 }
 
 export interface CalcResult {
@@ -110,6 +123,11 @@ export interface SavedSimulation {
   input: CalcInput;
   netProfit: number;
   netMargin: number;
+  /** Legacy records omit these → treated as "profit" / "margin". */
+  calculationMode?: CalculationMode;
+  profitType?: ProfitType;
+  recommendedPrice?: number;
+  markupPct?: number;
 }
 
 export interface SavedProduct {
