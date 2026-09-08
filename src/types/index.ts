@@ -81,6 +81,14 @@ export interface CalcInput {
   taxType: TaxType;
   taxValue: number;
   toggles: CostToggles;
+  /** Calculator flow used (legacy records may omit it → "profit"). */
+  calcMode?: CalculationMode;
+  /** Gain definition in the price-formation flow (legacy → "margin"). */
+  profitType?: ProfitType;
+  /** Desired net margin (%) used by the price-formation flow. */
+  desiredMarginPct?: number;
+  /** Desired markup (%) over the base cost. */
+  markupPct?: number;
 }
 
 export interface CalcResult {
