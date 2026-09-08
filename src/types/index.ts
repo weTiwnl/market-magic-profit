@@ -123,6 +123,11 @@ export interface SavedSimulation {
   input: CalcInput;
   netProfit: number;
   netMargin: number;
+  /** Legacy records omit these → treated as "profit" / "margin". */
+  calculationMode?: CalculationMode;
+  profitType?: ProfitType;
+  recommendedPrice?: number;
+  markupPct?: number;
 }
 
 export interface SavedProduct {
