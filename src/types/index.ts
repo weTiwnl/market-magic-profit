@@ -10,6 +10,11 @@ export const MARKETPLACE_LABELS: Record<MarketplaceId, string> = {
 export type AdType = "none" | "fixed" | "percent";
 export type TaxType = "percent" | "fixed";
 
+/** Which calculator flow the user is on. */
+export type CalculationMode = "profit" | "price";
+/** How the user defines the desired gain in the price-formation flow. */
+export type ProfitType = "margin" | "markup";
+
 /** A reusable fee configuration (ex: "Mercado Livre — Anúncio Clássico"). */
 export interface FeeProfile {
   id: string;
