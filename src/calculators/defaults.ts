@@ -26,6 +26,10 @@ export function createEmptyInput(overrides: Partial<CalcInput> = {}): CalcInput 
     taxType: "percent",
     taxValue: 0,
     toggles: { ...DEFAULT_TOGGLES },
+    calcMode: "profit",
+    profitType: "margin",
+    desiredMarginPct: 20,
+    markupPct: 20,
     ...overrides,
   };
 }
