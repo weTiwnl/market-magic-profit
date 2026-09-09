@@ -5,6 +5,7 @@ import { ActionButton, AppShell } from "@/components/AppShell";
 import { ComparePanel } from "@/components/ComparePanel";
 import { PriceSimulation } from "@/components/PriceSimulation";
 import { ResultPanel } from "@/components/ResultPanel";
+import { GoalPanel, MarginVsMarkup, PriceResultPanel } from "@/components/PricingPanel";
 import {
   NumberField,
   Panel,
@@ -14,8 +15,9 @@ import {
   ToggleCheck,
 } from "@/components/fields";
 import { applyProfile, breakEvenFor, calculateProfit, priceForMargin } from "@/calculators/profit";
+import { validateCalcInput } from "@/calculators/pricing";
 import { useVendaCalc } from "@/hooks/useVendaCalc";
-import { MARKETPLACE_LABELS, type MarketplaceId } from "@/types";
+import { MARKETPLACE_LABELS, type CalculationMode, type MarketplaceId } from "@/types";
 import { formatMoney, formatPercent } from "@/utils/format";
 import { cn } from "@/lib/utils";
 
