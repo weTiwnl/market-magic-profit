@@ -151,6 +151,7 @@ export function VendaCalcProvider({ children }: { children: ReactNode }) {
   const saveSimulation = useCallback(
     (input: CalcInput) => {
       const result = calculateProfit(input, settingsStore.value.lowMarginThreshold);
+      const mode = input.calcMode ?? "profit";
       simStore.setValue((prev) => [
         {
           id: uid(),
@@ -159,6 +160,10 @@ export function VendaCalcProvider({ children }: { children: ReactNode }) {
           input,
           netProfit: result.netProfit,
           netMargin: result.netMargin,
+          calculationMode: mode,
+          profitType: input.profitType ?? "margin",
+          markupPct: input.markupPct ?? 0,
+          ...(mode === "price" ? { recommendedPrice: input.price } : {}),
         },
         ...prev,
       ]);
