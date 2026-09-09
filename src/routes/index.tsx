@@ -181,13 +181,15 @@ function CalculadoraPage() {
                 value={draft.productCost}
                 onChange={(productCost) => patchDraft({ productCost })}
               />
-              <NumberField
-                label="Preço de venda"
-                prefix="R$"
-                emphasis
-                value={draft.price}
-                onChange={(price) => patchDraft({ price })}
-              />
+              {isPriceMode ? null : (
+                <NumberField
+                  label="Preço de venda"
+                  prefix="R$"
+                  emphasis
+                  value={draft.price}
+                  onChange={(price) => patchDraft({ price })}
+                />
+              )}
               <NumberField
                 label="Embalagem"
                 prefix="R$"
