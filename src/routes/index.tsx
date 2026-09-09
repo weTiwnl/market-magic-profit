@@ -42,15 +42,41 @@ export const Route = createFileRoute("/")({
 
 const MARKETPLACES: MarketplaceId[] = ["shopee", "mercado_livre", "propria", "custom"];
 
+const MODES: { value: CalculationMode; title: string; help: string; icon: string }[] = [
+  {
+    value: "profit",
+    title: "Calcular meu lucro",
+    help: "Informe o preço que pretende vender e descubra quanto realmente sobra.",
+    icon: "💰",
+  },
+  {
+    value: "price",
+    title: "Descobrir meu preço de venda",
+    help: "Informe seus custos e quanto deseja ganhar para descobrir o preço necessário.",
+    icon: "🎯",
+  },
+];
+
 function CalculadoraPage() {
   const { draft, patchDraft, settings, saveSimulation, saveProduct } = useVendaCalc();
   const [targetProfit, setTargetProfit] = useState(10);
   const [targetMargin, setTargetMargin] = useState(settings.targetMarginPct);
   const [showCompare, setShowCompare] = useState(false);
 
+  const mode: CalculationMode = draft.calcMode ?? "profit";
+  const isPriceMode = mode === "price";
+
   const result = useMemo(
     () => calculateProfit(draft, settings.lowMarginThreshold),
     [draft, settings.lowMarginThreshold],
+  );
+
+  const issues = useMemo(
+    () =>
+      validateCalcInput(draft, "profit").filter(
+        (i) => !i.message.startsWith("Informe o preço") || draft.price > 0,
+      ),
+    [draft],
   );
 
   const minPrice = breakEvenFor(draft, targetProfit);
@@ -63,8 +89,12 @@ function CalculadoraPage() {
 
   return (
     <AppShell
-      title="Calculadora de lucro"
-      subtitle="Simulação em tempo real · valores arredondados só na exibição"
+      title={isPriceMode ? "Formação de preço" : "Calculadora de lucro"}
+      subtitle={
+        isPriceMode
+          ? "Custos + objetivo de ganho · preço de venda necessário"
+          : "Simulação em tempo real · valores arredondados só na exibição"
+      }
       actions={
         <>
           <ActionButton
@@ -87,9 +117,52 @@ function CalculadoraPage() {
         </>
       }
     >
+      <section className="panel-surface mb-5 p-4 sm:p-5">
+        <h2 className="eyebrow">O que você quer calcular?</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {MODES.map((item) => {
+            const active = item.value === mode;
+            return (
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => patchDraft({ calcMode: item.value })}
+                className={cn(
+                  "rounded-xl p-4 text-left ring-1 transition-colors",
+                  active
+                    ? "bg-profit/10 ring-profit/40"
+                    : "bg-field ring-hairline hover:ring-ring/40",
+                )}
+              >
+                <p
+                  className={cn(
+                    "text-[14px] font-semibold",
+                    active ? "text-profit" : "text-foreground",
+                  )}
+                >
+                  <span className="mr-2">{item.icon}</span>
+                  {item.title}
+                </p>
+                <p className="mt-1 text-[12px] leading-relaxed text-mut">{item.help}</p>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
       <div className="grid gap-5 lg:grid-cols-[1fr_408px]">
         <div className="space-y-4">
-          <Panel title="Produto" step="01">
+          {issues.length > 0 ? (
+            <section className="panel-surface p-4 text-[12px] leading-relaxed text-warn">
+              <ul className="space-y-1">
+                {issues.map((issue) => (
+                  <li key={issue.message}>• {issue.message}</li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          <Panel title={isPriceMode ? "Produto & custos" : "Produto"} step="01">
             <div className="grid gap-3 sm:grid-cols-2">
               <TextField
                 label="Nome do produto"
