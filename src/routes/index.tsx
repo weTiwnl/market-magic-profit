@@ -418,74 +418,92 @@ function CalculadoraPage() {
             </p>
           </Panel>
 
-          <Panel title="Preço mínimo & preço ideal" step="03">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl bg-field p-4 ring-1 ring-hairline">
-                <p className="text-[12px] font-semibold text-foreground">
-                  Qual o menor preço que posso vender?
-                </p>
-                <div className="mt-3">
-                  <NumberField
-                    label="Lucro líquido desejado"
-                    prefix="R$"
-                    value={targetProfit}
-                    onChange={setTargetProfit}
-                  />
-                </div>
-                <p className="mt-3 text-[12px] leading-relaxed text-mut">
-                  Para obter <span className="num text-foreground">{formatMoney(targetProfit)}</span>{" "}
-                  de lucro líquido, seu preço mínimo deve ser aproximadamente{" "}
-                  <span className="num font-semibold text-profit">{formatMoney(minPrice)}</span>.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => patchDraft({ price: Number(minPrice.toFixed(2)) })}
-                  className="mt-3 text-[12px] font-medium text-info hover:underline"
-                >
-                  Usar este preço
-                </button>
-              </div>
+          {isPriceMode ? (
+            <>
+              <GoalPanel
+                profitType={draft.profitType ?? "margin"}
+                desiredMarginPct={draft.desiredMarginPct ?? settings.targetMarginPct}
+                markupPct={draft.markupPct ?? 20}
+                onChange={patchDraft}
+              />
+              <MarginVsMarkup markupPct={draft.markupPct ?? 20} />
+            </>
+          ) : (
+            <>
+              <Panel title="Preço mínimo & preço ideal" step="03">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl bg-field p-4 ring-1 ring-hairline">
+                    <p className="text-[12px] font-semibold text-foreground">
+                      Qual o menor preço que posso vender?
+                    </p>
+                    <div className="mt-3">
+                      <NumberField
+                        label="Lucro líquido desejado"
+                        prefix="R$"
+                        value={targetProfit}
+                        onChange={setTargetProfit}
+                      />
+                    </div>
+                    <p className="mt-3 text-[12px] leading-relaxed text-mut">
+                      Para obter{" "}
+                      <span className="num text-foreground">{formatMoney(targetProfit)}</span> de
+                      lucro líquido, seu preço mínimo deve ser aproximadamente{" "}
+                      <span className="num font-semibold text-profit">{formatMoney(minPrice)}</span>
+                      .
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => patchDraft({ price: Number(minPrice.toFixed(2)) })}
+                      className="mt-3 text-[12px] font-medium text-info hover:underline"
+                    >
+                      Usar este preço
+                    </button>
+                  </div>
 
-              <div className="rounded-xl bg-field p-4 ring-1 ring-hairline">
-                <p className="text-[12px] font-semibold text-foreground">Qual preço devo cobrar?</p>
-                <div className="mt-3">
-                  <NumberField
-                    label="Margem de lucro desejada"
-                    suffix="%"
-                    value={targetMargin}
-                    onChange={setTargetMargin}
-                  />
+                  <div className="rounded-xl bg-field p-4 ring-1 ring-hairline">
+                    <p className="text-[12px] font-semibold text-foreground">
+                      Qual preço devo cobrar?
+                    </p>
+                    <div className="mt-3">
+                      <NumberField
+                        label="Margem de lucro desejada"
+                        suffix="%"
+                        value={targetMargin}
+                        onChange={setTargetMargin}
+                      />
+                    </div>
+                    <div className="num mt-3 space-y-1 text-[12px]">
+                      <p className="flex justify-between">
+                        <span className="text-mut">Preço recomendado</span>
+                        <span className="font-semibold text-profit">{formatMoney(idealPrice)}</span>
+                      </p>
+                      <p className="flex justify-between">
+                        <span className="text-mut">Lucro estimado</span>
+                        <span>{formatMoney(idealResult.netProfit)}</span>
+                      </p>
+                      <p className="flex justify-between">
+                        <span className="text-mut">Margem</span>
+                        <span>{formatPercent(idealResult.netMargin)}</span>
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => patchDraft({ price: Number(idealPrice.toFixed(2)) })}
+                      className="mt-3 text-[12px] font-medium text-info hover:underline"
+                    >
+                      Usar este preço
+                    </button>
+                  </div>
                 </div>
-                <div className="num mt-3 space-y-1 text-[12px]">
-                  <p className="flex justify-between">
-                    <span className="text-mut">Preço recomendado</span>
-                    <span className="font-semibold text-profit">{formatMoney(idealPrice)}</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span className="text-mut">Lucro estimado</span>
-                    <span>{formatMoney(idealResult.netProfit)}</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span className="text-mut">Margem</span>
-                    <span>{formatPercent(idealResult.netMargin)}</span>
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => patchDraft({ price: Number(idealPrice.toFixed(2)) })}
-                  className="mt-3 text-[12px] font-medium text-info hover:underline"
-                >
-                  Usar este preço
-                </button>
-              </div>
-            </div>
-          </Panel>
+              </Panel>
 
-          <PriceSimulation
-            input={draft}
-            lowMarginThreshold={settings.lowMarginThreshold}
-            onPickPrice={(price) => patchDraft({ price: Number(price.toFixed(2)) })}
-          />
+              <PriceSimulation
+                input={draft}
+                lowMarginThreshold={settings.lowMarginThreshold}
+                onPickPrice={(price) => patchDraft({ price: Number(price.toFixed(2)) })}
+              />
+            </>
+          )}
 
           <div className={cn(!showCompare && "hidden")}>
             <ComparePanel input={draft} profiles={settings.profiles} />
@@ -493,21 +511,32 @@ function CalculadoraPage() {
         </div>
 
         <div className="lg:sticky lg:top-6 lg:h-fit">
-          <ResultPanel
-            input={draft}
-            result={result}
-            targetMarginPct={targetMargin}
-            onMaximize={() => {
-              const price = priceForMargin(draft, targetMargin);
-              if (!Number.isFinite(price)) {
-                toast.error("As taxas percentuais consomem toda a receita. Reduza-as.");
-                return;
-              }
-              patchDraft({ price: Number(price.toFixed(2)) });
-              toast.success(`Preço ajustado para ${formatMoney(price)}`);
-            }}
-            onCompare={() => setShowCompare((v) => !v)}
-          />
+          {isPriceMode ? (
+            <PriceResultPanel
+              input={draft}
+              lowMarginThreshold={settings.lowMarginThreshold}
+              onUsePrice={(price) => {
+                patchDraft({ price, calcMode: "profit" });
+                toast.success(`Preço aplicado: ${formatMoney(price)}`);
+              }}
+            />
+          ) : (
+            <ResultPanel
+              input={draft}
+              result={result}
+              targetMarginPct={targetMargin}
+              onMaximize={() => {
+                const price = priceForMargin(draft, targetMargin);
+                if (!Number.isFinite(price)) {
+                  toast.error("As taxas percentuais consomem toda a receita. Reduza-as.");
+                  return;
+                }
+                patchDraft({ price: Number(price.toFixed(2)) });
+                toast.success(`Preço ajustado para ${formatMoney(price)}`);
+              }}
+              onCompare={() => setShowCompare((v) => !v)}
+            />
+          )}
         </div>
       </div>
     </AppShell>
