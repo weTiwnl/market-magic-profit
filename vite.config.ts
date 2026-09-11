@@ -5,11 +5,60 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+  },
+  vite: {
+    plugins: [
+      VitePWA({
+        strategies: "generateSW",
+        registerType: "autoUpdate",
+        injectRegister: null,
+        filename: "sw.js",
+        outDir: "dist/client",
+        devOptions: { enabled: false },
+        // public/manifest.webmanifest is the source of truth for app identity.
+        manifest: false,
+        workbox: {
+          globDirectory: "dist/client",
+          globPatterns: ["**/*.{js,css,ico,png,svg,webmanifest,woff2}"],
+          navigateFallback: null,
+          navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//],
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
+          runtimeCaching: [
+            {
+              urlPattern: ({ request }) => request.mode === "navigate",
+              handler: "NetworkFirst",
+              options: {
+                cacheName: "profitza-pages",
+                networkTimeoutSeconds: 5,
+                expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              },
+            },
+            {
+              urlPattern: ({ url, request, sameOrigin }) =>
+                sameOrigin &&
+                (request.destination === "script" ||
+                  request.destination === "style" ||
+                  request.destination === "font" ||
+                  request.destination === "image") &&
+                !url.pathname.startsWith("/api/"),
+              handler: "CacheFirst",
+              options: {
+                cacheName: "profitza-assets",
+                expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              },
+            },
+          ],
+        },
+      }),
+    ],
   },
 });

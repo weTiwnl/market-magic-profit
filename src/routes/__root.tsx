@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { VendaCalcProvider } from "@/hooks/useVendaCalc";
+import { setupServiceWorker } from "@/lib/pwa";
 
 
 function NotFoundComponent() {
@@ -136,7 +137,9 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
-
+  useEffect(() => {
+    setupServiceWorker();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
