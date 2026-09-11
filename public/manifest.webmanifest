@@ -1,7 +1,7 @@
 {
   "name": "Profitza",
   "short_name": "Profitza",
-  "description": "Calculadora e análise de rentabilidade para vendas online.",
+  "description": "Calculadora de formação de preço e rentabilidade para vendas.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
